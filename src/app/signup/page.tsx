@@ -7,9 +7,12 @@ import "../globals.css";
 
 export default function page() {
   const [formData, setFormData] = useState({
+    username: "",
+    firstname: "",
+    lastname: "",
     email: "",
     password: "",
-    passwordConfirm: ""
+    passwordConfirm: "",
   });
 
   function handleSubmit(event: any) {
@@ -64,6 +67,45 @@ export default function page() {
               className="flex flex-col w-screen mx-10 md:w-[50%]"
             >
               <h1 className="text-3xl mb-8 font-barlow">Sign Up</h1>
+              <label htmlFor={id + "-username"} className="font-barlow">
+                username
+              </label>
+              <br />
+              <input
+                type="text"
+                placeholder="johndoe123"
+                value={formData.username}
+                name="username"
+                onChange={handleChange}
+                className="border-black p-3 border-2 my-2 w-full font-barlow"
+                id={id + "-username"}
+              />
+              <label htmlFor={id + "-firstname"} className="font-barlow">
+                first name
+              </label>
+              <br />
+              <input
+                type="text"
+                placeholder="john"
+                value={formData.firstname}
+                name="firstname"
+                onChange={handleChange}
+                className="border-black p-3 border-2 my-2 w-full font-barlow"
+                id={id + "-firstname"}
+              />
+              <label htmlFor={id + "-lastname"} className="font-barlow">
+                last name
+              </label>
+              <br />
+              <input
+                type="text"
+                placeholder="doe"
+                value={formData.lastname}
+                name="lastname"
+                onChange={handleChange}
+                className="border-black p-3 border-2 my-2 w-full font-barlow"
+                id={id + "-lastname"}
+              />
               <label htmlFor={id + "-email"} className="font-barlow">
                 email
               </label>
@@ -90,10 +132,7 @@ export default function page() {
                 className="border-black p-3 border-2 my-2 w-full font-barlow"
                 id={id + "-password"}
               />
-              <label
-                htmlFor={id + "-password-confirm"}
-                className="font-barlow"
-              >
+              <label htmlFor={id + "-password-confirm"} className="font-barlow">
                 confirm password
               </label>
               <br />
