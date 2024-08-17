@@ -7,20 +7,16 @@ import "../globals.css";
 
 export default function page() {
   const [formData, setFormData] = useState({
-    email: "",
+    username: "",
     password: "",
   });
   function handleSubmit(event: any) {
     event.preventDefault();
-    if (!formData.email.includes("@gmail.com")) {
-      console.log("Enter valid email address");
-    } else {
-      console.log("Login in successful!");
-    }
+    console.log("Login in successful!");
   }
 
   function handleChange(event: any) {
-    setFormData((prevFormData) => {
+    setFormData((prevFormData: any) => {
       const { name, value } = event.target;
       return {
         ...prevFormData,
@@ -60,18 +56,18 @@ export default function page() {
               className="flex flex-col w-screen mx-10 md:w-[50%]"
             >
               <h1 className="text-3xl mb-8 font-barlow">Log in</h1>
-              <label htmlFor={id + "-email"} className="font-barlow">
-                email
+              <label htmlFor={id + "-username"} className="font-barlow">
+                username
               </label>
               <br />
               <input
-                type="email"
-                placeholder="johndoe@gmail.com"
-                value={formData.email}
-                name="email"
+                type="text"
+                placeholder="johndoe"
+                value={formData.username}
+                name="username"
                 onChange={handleChange}
                 className="border-black p-3 border-2 my-2 w-full font-barlow"
-                id={id + "-email"}
+                id={id + "-username"}
               />
               <label htmlFor={id + "-password"} className="font-barlow">
                 password
