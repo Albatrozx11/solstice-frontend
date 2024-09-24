@@ -1,10 +1,12 @@
 import React from "react";
+import Link from "next/link";
 export default function Holdings() {
   return (
     <>
       <div className="flex justify-between px-2 my-4 mx-4 items-center">
         <div className="flex flex-col">
-          <h1 className="text-black opacity-80">AAPL</h1>
+          <Link href="/company/AAPL"><h1 className="text-black opacity-80">AAPL</h1></Link>
+          
           <h1 className="text-[#615D5D]">100 shares</h1>
         </div>
         <h1 className="text-[#615D5D]">$226.05</h1>

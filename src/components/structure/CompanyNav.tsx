@@ -1,17 +1,23 @@
-import React, { useState } from "react";
-import Link from "next/link";
+"use client";
+import { useState } from "react";
 import { Menu, X } from "lucide-react";
-export default function DashNav() {
+import Link from "next/link";
+export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const toggleNavbar = () => {
     setIsOpen(!isOpen);
   };
   return (
-    <>
+    <div className=" mx-16">
       <nav className="flex flex-col justify-center h-auto">
         <div className="my-4 flex items-center justify-between">
+          <Link href="/">
+            <h1 className="font-breul text-3xl cursor-pointer bg-gradient-to-r from-zinc-900 to-zinc-600 bg-clip-text text-transparent">
+              Solstice
+            </h1>
+          </Link>
           <ul className="hidden md:flex gap-6 list-none font-barlow cursor-pointer">
-            <Link href="/dashboard">
+          <Link href="/dashboard">
               <li>Overview</li>
             </Link>
             <Link href="/watchlist">
@@ -21,7 +27,6 @@ export default function DashNav() {
               <li>Stocks</li>
             </Link>
 
-            <li>About Us</li>
           </ul>
           <div className="hidden md:flex items-center gap-6 font-barlow font-bold">
             <div className="rounded-full">
@@ -62,6 +67,6 @@ export default function DashNav() {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }

@@ -2,9 +2,9 @@ import React from "react";
 import Holdings from "./Holdings";
 export default function HoldingsContainer() {
   return (
-    <div className="rounded-md shadow-black shadow-md border-black w-1/3 ml-7 justify-start min-h-[65px]">
+    <div className="rounded-md shadow-black shadow-md border-black w-[500px] ml-7 justify-start min-h-[65px]">
       <div className="flex justify-between">
-        <h1 className="font-barlow text-xl text-black opacity-80 px-2 my-6 mx-4">
+        <h1 className="font-barlow text-xl text-black opacity-80 px-2 my-6 mx-4 ">
           HOLDINGS
         </h1>
         <h1 className="font-barlow text-xl text-black opacity-80 px-2 my-6 mx-4">

@@ -172,7 +172,7 @@ export function Linechart() {
       <CardContent className="px-2 sm:p-6">
         <ChartContainer
           config={chartConfig}
-          className="aspect-auto h-[300px] w-full"
+          className="aspect-auto h-[190px] w-full"
         >
           <LineChart
             accessibilityLayer

@@ -12,7 +12,6 @@ export default function page() {
   });
   function handleSubmit(event: any) {
     event.preventDefault();
-    console.log("Login in successful!");
   }
 
   function handleChange(event: any) {
