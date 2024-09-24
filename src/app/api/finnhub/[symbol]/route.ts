@@ -25,9 +25,18 @@ export async function GET(req: Request, { params }: { params: { symbol: string }
         });
       });
 
+      const recommendation = await new Promise((resolve, reject) => {
+        finnhubClient.recommendationTrends({symbol}, (error:any, data:any) => {
+          if (error) reject(error);
+          console.log(data);
+          resolve(data);
+        });
+      })
+
       return NextResponse.json({
         companyProfile,
-        quote
+        quote,
+        recommendation
     });
     } catch (error) {
       console.error('Error fetching company data:', error);

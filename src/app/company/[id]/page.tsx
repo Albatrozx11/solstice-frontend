@@ -11,12 +11,11 @@ interface CompanyProps {
   params: { id: string };
 }
 export default function page({ params }: CompanyProps) {
-  const [companyData, setCompanyData] = useState<any>(null);
+  const [data, setData] = useState<any>(null);
   const [formData, setFormData] = useState<any>({
-    qty:0
+    qty: 0,
   });
   const [selected, setSelected] = useState<any>(null);
-  const [quote, setQuote] = useState<any>(null);
   const [error, setError] = useState<any>(null);
   const { id } = params;
 
@@ -27,9 +26,15 @@ export default function page({ params }: CompanyProps) {
     setSelected("SELL");
   };
 
-  const handleChange = () => {
-
-  }
+  const handleChange = (event: any) => {
+    setFormData((prevFormData: any) => {
+      const { name, value } = event.target;
+      return {
+        ...prevFormData,
+        [name]: value,
+      };
+    });
+  };
 
   const handleSubmit = () => {};
   useEffect(() => {
@@ -41,8 +46,11 @@ export default function page({ params }: CompanyProps) {
         }
         const data = await res.json();
         console.log(data);
-        setCompanyData(data.companyProfile);
-        setQuote(data.quote);
+        setData({
+          companyData: data.companyProfile,
+          quote: data.quote,
+          recommendation: data.recommendation,
+        });
       } catch (error: any) {
         setError(error.message);
       }
@@ -54,7 +62,7 @@ export default function page({ params }: CompanyProps) {
     return <div>{error}</div>;
   }
 
-  if (!companyData) {
+  if (!data) {
     return (
       <div className=" text-3xl font-barlow flex text-center justify-center">
         Loading...
@@ -70,14 +78,16 @@ export default function page({ params }: CompanyProps) {
             <div className="flex w-full">
               <div className="flex flex-col w-full">
                 <img
-                  src={`https://assets.parqet.com/logos/symbol/${companyData.ticker}?format=jpg`}
+                  src={`https://assets.parqet.com/logos/symbol/${data.companyData.ticker}?format=jpg`}
                   width={100}
                   height={100}
                 />
                 <h1 className="font-barlow text-2xl ml-5">
-                  {companyData.name}
+                  {data.companyData.name}
                 </h1>
-                <h1 className="font-barlow text-2xl ml-5 mt-4">${quote.pc}</h1>
+                <h1 className="font-barlow text-2xl ml-5 mt-4">
+                  ${data.quote.pc}
+                </h1>
               </div>
               <button className="rounded-md border-gray border-2 h-10 font-barlow px-2 mt-2 ">
                 Watchlist
@@ -86,10 +96,16 @@ export default function page({ params }: CompanyProps) {
             <div className="mt-4 ml-4">
               <CompanyChart />
             </div>
+            <div className="mt-4 ml-4 flex flex-col">
+              <h1 className="text-xl text-gray-600">Analyst Estimates</h1>
+              <div className={`rounded-full ${data.recommendation.buy > data.recommendation.sell ? `bg-green-500`: `bg-red-600`}  `}>
+                <h1>{data.recommendation.buy > data.recommendation.sell ? data.recommendation.buy : data.recommendation.sell}</h1>
+              </div>
+            </div>
           </div>
         </div>
         <div className="basis-[40%] ml-10 mt-2 border-2 border-gray-300 rounded-md h-full flex flex-col">
-          <h1 className="text-xl font-barlow m-4">{companyData.name}</h1>
+          <h1 className="text-xl font-barlow m-4">{data.companyData.name}</h1>
           <hr className="border-t-2 border-gray-400 w-full mt-auto" />
           <div className="flex">
             <button
@@ -140,7 +156,9 @@ export default function page({ params }: CompanyProps) {
               </div>
               <div className="flex m-4 justify-between">
                 <h1 className="text-gray-600 font-barlow">Balance: $0</h1>
-                <h1 className="text-gray-600  font-barlow">Approx req: ${}</h1>
+                <h1 className="text-gray-600  font-barlow">
+                  Approx req: ${formData.qty * data.quote.pc}
+                </h1>
               </div>
               <hr className="border-t-2 border-gray-400 w-full mt-auto" />
               <button className="w-full bg-green-600 text-white font-barlow text-2xl rounded-md py-3">
@@ -156,11 +174,14 @@ export default function page({ params }: CompanyProps) {
                 <form onSubmit={handleSubmit}>
                   <div className="flex justify-between">
                     <label htmlFor="" className="font-barlow">
-                      Qty
+                      qty
                     </label>
                     <input
                       type="text"
                       className="border-gray-300 rounded-md border-2 p-2"
+                      onChange={handleChange}
+                      name="qty"
+                      value={formData.qty}
                     />
                   </div>
                   <div className="flex justify-between mt-4">
