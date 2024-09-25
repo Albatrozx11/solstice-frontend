@@ -77,12 +77,8 @@ export default function page({ params }: CompanyProps) {
           <div className="flex flex-col w-full">
             <div className="flex w-full">
               <div className="flex flex-col w-full">
-                <img
-                  src={`https://assets.parqet.com/logos/symbol/${data.companyData.ticker}?format=jpg`}
-                  width={100}
-                  height={100}
-                />
-                <h1 className="font-barlow text-2xl ml-5">
+                <img src={data.companyData.logo} width={100} height={100} />
+                <h1 className="font-barlow text-2xl mt-2">
                   {data.companyData.name}
                 </h1>
                 <h1 className="font-barlow text-2xl ml-5 mt-4">
@@ -98,8 +94,18 @@ export default function page({ params }: CompanyProps) {
             </div>
             <div className="mt-4 ml-4 flex flex-col">
               <h1 className="text-xl text-gray-600">Analyst Estimates</h1>
-              <div className={`rounded-full ${data.recommendation.buy > data.recommendation.sell ? `bg-green-500`: `bg-red-600`}  `}>
-                <h1>{data.recommendation.buy > data.recommendation.sell ? data.recommendation.buy : data.recommendation.sell}</h1>
+              <div
+                className={`rounded-full ${
+                  data.recommendation.buy > data.recommendation.sell
+                    ? `bg-green-500`
+                    : `bg-red-600`
+                }  `}
+              >
+                <h1>
+                  {data.recommendation.buy > data.recommendation.sell
+                    ? data.recommendation.buy
+                    : data.recommendation.sell}
+                </h1>
               </div>
             </div>
           </div>
