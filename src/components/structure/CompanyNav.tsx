@@ -17,7 +17,7 @@ export default function Navbar() {
             </h1>
           </Link>
           <ul className="hidden md:flex gap-6 list-none font-barlow cursor-pointer">
-          <Link href="/dashboard">
+            <Link href="/dashboard">
               <li>Overview</li>
             </Link>
             <Link href="/watchlist">
@@ -26,9 +26,10 @@ export default function Navbar() {
             <Link href="/companyList">
               <li>Stocks</li>
             </Link>
-
           </ul>
+          
           <div className="hidden md:flex items-center gap-6 font-barlow font-bold">
+
             <div className="rounded-full">
               <img
                 src="https://i.pravatar.cc/40"

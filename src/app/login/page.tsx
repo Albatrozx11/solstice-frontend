@@ -37,6 +37,7 @@ export default function page() {
         alert("Login successful");
         setToken(data.token);
         localStorage.setItem("token", data.token);
+        document.cookie = `auth-token=${data.token}; path=/;`
         router.push("/dashboard");
       } else {
         alert("Login failed");

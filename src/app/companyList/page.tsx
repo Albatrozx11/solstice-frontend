@@ -64,9 +64,8 @@ export default function Page() {
             />
           ))
         ) : (
-          <p>No stocks available.</p>
+          <p></p>
         )}
-        {isLoading && <p>Loading more stocks...</p>} {/* Show loading indicator */}
       </div>
     </div>
   );

@@ -8,8 +8,17 @@ import PriceIndex from "@/components/PriceIndex";
 import NewsCard from "@/components/NewsCard";
 import PortfolioOverview from "@/components/PortfolioOverview";
 import HoldingsContainer from "@/components/HoldingsContainer";
-
+import { isAuthenticated } from "@/lib/utils";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 export default function page() {
+
+  const router = useRouter();
+  useEffect(() => {
+    if (!isAuthenticated()) {
+      router.push('/login'); // Redirect if not authenticated
+    }
+  }, [router]);
   return (
     <div className="md:flex mb-5 flex-col mx-10 h-max">
       <DashNav />
