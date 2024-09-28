@@ -4,25 +4,68 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useId, useState } from "react";
 import "../globals.css";
+import { useRouter } from "next/navigation";
 
 export default function page() {
   const [formData, setFormData] = useState({
     username: "",
-    firstname: "",
-    lastname: "",
+    first_name: "",
+    last_name: "",
     email: "",
     password: "",
     passwordConfirm: "",
   });
 
-  function handleSubmit(event: any) {
+  const router = useRouter();
+
+  async function handleSubmit(event: any) {
     event.preventDefault();
-    if (!formData.email.includes("@gmail.com")) {
-      console.log("Enter valid email address");
-    } else if (formData.password === formData.passwordConfirm) {
-      console.log("successfully Registered to solstice!");
-    } else {
-      console.log("Passwords do not match!");
+
+    const {
+      username,
+      first_name,
+      last_name,
+      email,
+      password,
+      passwordConfirm,
+    } = formData;
+
+    if (password !== passwordConfirm) {
+      alert("Passwords do not match");
+      return;
+    }
+
+    const userData = {
+      username,
+      first_name,
+      last_name,
+      email,
+      password,
+      passwordConfirm,
+    };
+
+    try {
+      const response = await fetch("http://localhost:8000/signup/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log("signup successful:", data);
+        alert("Signup successful Redirecting to login...");
+        router.push("/login");
+      } else {
+        console.log("signup failed:", data);
+        alert("Signup failed: " + data?.detail || "Unknown error");
+      }
+    } catch (error) {
+      console.error("Error signing up:", error);
+      alert("An error occurred while signing up, please try again");
     }
   }
 
@@ -80,31 +123,31 @@ export default function page() {
                 className="border-black p-3 border-2 my-2 w-full font-barlow"
                 id={id + "-username"}
               />
-              <label htmlFor={id + "-firstname"} className="font-barlow">
+              <label htmlFor={id + "-first_name"} className="font-barlow">
                 first name
               </label>
               <br />
               <input
                 type="text"
                 placeholder="john"
-                value={formData.firstname}
-                name="firstname"
+                value={formData.first_name}
+                name="first_name"
                 onChange={handleChange}
                 className="border-black p-3 border-2 my-2 w-full font-barlow"
-                id={id + "-firstname"}
+                id={id + "-first_name"}
               />
-              <label htmlFor={id + "-lastname"} className="font-barlow">
+              <label htmlFor={id + "-last_name"} className="font-barlow">
                 last name
               </label>
               <br />
               <input
                 type="text"
                 placeholder="doe"
-                value={formData.lastname}
-                name="lastname"
+                value={formData.last_name}
+                name="last_name"
                 onChange={handleChange}
                 className="border-black p-3 border-2 my-2 w-full font-barlow"
-                id={id + "-lastname"}
+                id={id + "-last_name"}
               />
               <label htmlFor={id + "-email"} className="font-barlow">
                 email

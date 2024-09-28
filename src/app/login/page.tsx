@@ -4,14 +4,47 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useId, useState } from "react";
 import "../globals.css";
-
+import { useRouter } from "next/navigation";
 export default function page() {
   const [formData, setFormData] = useState({
     username: "",
     password: "",
   });
-  function handleSubmit(event: any) {
+  const [token, setToken] = useState("");
+  const router = useRouter();
+  async function handleSubmit(event: any) {
     event.preventDefault();
+
+    const { username, password } = formData;
+
+    const userData = {
+      username,
+      password,
+    };
+
+    try {
+      const response = await fetch("http://localhost:8000/login/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert("Login successful");
+        setToken(data.token);
+        localStorage.setItem("token", data.token);
+        router.push("/dashboard");
+      } else {
+        alert("Login failed");
+      }
+      
+    } catch (error) {
+      alert("Login failed");
+    }
   }
 
   function handleChange(event: any) {
