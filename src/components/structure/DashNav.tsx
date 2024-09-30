@@ -1,10 +1,56 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
+import { useRouter } from "next/navigation";
+import Modal from "../ui/Modal";
+import { set } from "react-hook-form";
 export default function DashNav() {
   const [isOpen, setIsOpen] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [token, setToken] = useState("");
   const toggleNavbar = () => {
     setIsOpen(!isOpen);
+  };
+
+  const router = useRouter();
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+    if (storedToken) {
+      setToken(storedToken);
+    } else {
+      // redirect to login page
+      alert("You need to login first");
+      router.push("/login");
+    }
+  }, []);
+  const handleCreatePortfolio = async (portfolioName: string) => {
+    if (!token) {
+      alert("You need to login first");
+      router.push("/login");
+    }
+    
+    try {
+      const response = await fetch("http://localhost:8000/create-portfolio/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Token ${token}`,
+        },
+        body: JSON.stringify({
+          portfolio_name: portfolioName,
+        }),
+      });
+
+      if (response.ok) {
+        localStorage.setItem("portfolio", "created");
+        console.log("Portfolio created successfully");
+        alert("Portfolio created successfully");
+      } else {
+        console.error("Failed to create portfolio");
+      }
+    } catch (error) {
+      console.error("Error creating portfolio:", error);
+    }
   };
   return (
     <>
@@ -24,6 +70,17 @@ export default function DashNav() {
             <li>About Us</li>
           </ul>
           <div className="hidden md:flex items-center gap-6 font-barlow font-bold">
+            <button
+              className="border-2 border-black px-6 py-3 font-bold"
+              onClick={() => setShowModal(true)}
+            >
+              Create Portfolio
+            </button>
+            <Modal
+              show={showModal}
+              onClose={() => setShowModal(false)}
+              onSubmit={handleCreatePortfolio}
+            />
             <div className="rounded-full">
               <img
                 src="https://i.pravatar.cc/40"

@@ -1,17 +1,17 @@
 "use client";
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, use } from "react";
 import CompanyNav from "@/components/structure/CompanyNav";
 import Stock from "@/components/ui/stock";
-
+import yahooFinance from "yahoo-finance2";
+import { set } from "react-hook-form";
 const ITEMS_PER_PAGE = 10;
 
 export default function Page() {
   const [stocks, setStocks] = useState<any[]>([]); // Array of stocks
   const [isLoading, setIsLoading] = useState(false);
   const [offset, setOffset] = useState(0); // Current offset for pagination
-
+  const [quote, setQuote] = useState<any>(null);
   const API_URL_stock = `https://finnhub.io/api/v1/stock/symbol?exchange=US&token=crpe8j1r01qsek0fj8pgcrpe8j1r01qsek0fj8q0`;
-
   const fetchStocks = async () => {
     setIsLoading(true);
     try {
@@ -31,7 +31,11 @@ export default function Page() {
     } finally {
       setIsLoading(false);
     }
+
   };
+  
+
+
 
   const handleScroll = useCallback(() => {
     const bottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 200; // Trigger when near bottom

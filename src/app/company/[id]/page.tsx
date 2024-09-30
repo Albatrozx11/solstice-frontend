@@ -118,11 +118,14 @@ export default function page({ params }: CompanyProps) {
     }
   }, [recommendationData]);
 
-  const formattedMarketCap = quote ? quote.marketCap.toLocaleString('en-US', {
+
+    const formattedMarketCap = quote ? quote.marketCap.toLocaleString('en-US', {
     style: 'currency',
     currency: 'USD',
     minimumFractionDigits: 0,
   }) : null;
+
+
   return (
     <div className="flex flex-col mx-10 h-max">
       <CompanyNav />
@@ -149,8 +152,8 @@ export default function page({ params }: CompanyProps) {
                 Watchlist
               </button>
             </div>
-            <div className="mt-4 ml-4">
-              <CompanyChart />
+            <div className="mt-4 ml-4 ">
+              <CompanyChart symbol={params.id}/>
             </div>
             {analystEstimates && (
               <div className="mt-20 ml-4 flex flex-col">

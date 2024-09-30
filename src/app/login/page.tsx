@@ -34,7 +34,6 @@ export default function page() {
       const data = await response.json();
 
       if (response.ok) {
-        alert("Login successful");
         setToken(data.token);
         localStorage.setItem("token", data.token);
         document.cookie = `auth-token=${data.token}; path=/;`
