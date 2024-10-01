@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import CompanyNav from "@/components/structure/CompanyNav";
 import CompanyChart from "@/components/ui/CompanyChart";
 import { Divide } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { set } from "react-hook-form";
 import { receiveMessageOnPort } from "worker_threads";
 import { format } from "path";
@@ -16,14 +17,29 @@ interface CompanyProps {
 export default function page({ params }: CompanyProps) {
   const [companyProfile, setCompanyProfile] = useState<any>(null);
   const [quote, setQuote] = useState<any>(null);
+  const [token, setToken] = useState("");
   const [recommendationData, setRecommendationData] = useState<any>(null);
   const [analystEstimates, setAnalystEstimates] = useState<any>(null);
+  const [isWatchlist, setIsWatchlist] = useState(false);
   const [formData, setFormData] = useState<any>({
     qty: 0,
   });
   const [selected, setSelected] = useState<any>(null);
   const [error, setError] = useState<any>(null);
   const { id } = params;
+
+  const router = useRouter();
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+    if (storedToken) {
+      setToken(storedToken);
+    } else {
+      // redirect to login page
+      alert("You need to login first");
+      router.push("/login");
+    }
+  }, []);
 
   const handleSelectBuy = () => {
     setSelected("BUY");
@@ -32,6 +48,12 @@ export default function page({ params }: CompanyProps) {
     setSelected("SELL");
   };
 
+  useEffect(() => {
+    const storedToken = localStorage.getItem("watchlist");
+    if (storedToken == "created") {
+      setIsWatchlist(true);
+    }
+  }, []);
   const handleChange = (event: any) => {
     setFormData((prevFormData: any) => {
       const { name, value } = event.target;
@@ -42,6 +64,37 @@ export default function page({ params }: CompanyProps) {
     });
   };
 
+  async function handleWatchList() {
+    if (!token) {
+      alert("You need to login first");
+      router.push("/login");
+    }
+
+    if (!isWatchlist) {
+      alert("create new watchlist to continue");
+      router.push("/watchlist");
+    }
+    try {
+      const response = await fetch("http://localhost:8000/watchlist/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Token ${token}`,
+        },
+        body: JSON.stringify({
+          comp_name: companyProfile.name,
+        }),
+      });
+
+      if (response.ok) {
+        alert(`Added ${companyProfile.name} to watchlist`);
+      } else {
+        console.error("Failed to add to watchlist");
+      }
+    } catch (error) {
+      console.error("Error creating watchlist:", error);
+    }
+  }
   const handleSubmit = () => {};
   useEffect(() => {
     const fetchData = async () => {
@@ -111,20 +164,19 @@ export default function page({ params }: CompanyProps) {
       };
     };
 
-
     if (recommendationData !== null) {
       const estimates = calculateRecommendationPercentages(recommendationData);
       setAnalystEstimates(estimates);
     }
   }, [recommendationData]);
 
-
-    const formattedMarketCap = quote ? quote.marketCap.toLocaleString('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 0,
-  }) : null;
-
+  const formattedMarketCap =
+    quote && quote.marketCap ? quote.marketCap.toLocaleString("en-US", {
+          style: "currency",
+          currency: "USD",
+          minimumFractionDigits: 0,
+        })
+      : null;
 
   return (
     <div className="flex flex-col mx-10 h-max">
@@ -148,12 +200,15 @@ export default function page({ params }: CompanyProps) {
                   </h1>
                 )}
               </div>
-              <button className="rounded-md border-gray border-2 h-10 font-barlow px-2 mt-2 ">
+              <button
+                className="rounded-md border-gray border-2 h-10 font-barlow px-2 mt-2 "
+                onClick={handleWatchList}
+              >
                 Watchlist
               </button>
             </div>
             <div className="mt-4 ml-4 ">
-              <CompanyChart symbol={params.id}/>
+              <CompanyChart symbol={params.id} />
             </div>
             {analystEstimates && (
               <div className="mt-20 ml-4 flex flex-col">

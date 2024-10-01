@@ -1,12 +1,13 @@
 import { NextResponse } from "next/server";
 const finnhub = require("finnhub");
+import dotenv from "dotenv";
 export async function GET(req: Request, { params }: { params: { symbol: string } }) {
     const { symbol } = params;
-
+    dotenv.config();
     try {
       // Initialize the finnhub API client
       const api_key = finnhub.ApiClient.instance.authentications['api_key'];
-      api_key.apiKey = 'crpe8j1r01qsek0fj8pgcrpe8j1r01qsek0fj8q0'; // Replace with your actual API key
+      api_key.apiKey = process.env.NEXT_PUBLIC_FINNHUB_API_KEY; // Replace with your actual API key
       const finnhubClient = new finnhub.DefaultApi();
   
       const recommendation = await new Promise((resolve, reject) => {

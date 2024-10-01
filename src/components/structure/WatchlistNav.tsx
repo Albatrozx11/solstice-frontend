@@ -2,18 +2,19 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import { useRouter } from "next/navigation";
-import Modal from "../ui/Modal";
-import { set } from "react-hook-form";
-export default function DashNav() {
+import ModalWatchlist from "../ui/ModalWatchlist";
+
+export default function WatchlistNav() {
   const [isOpen, setIsOpen] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [isPortfolio, setIsPortfolio] = useState(false);
   const [token, setToken] = useState("");
+
   const toggleNavbar = () => {
     setIsOpen(!isOpen);
   };
 
   const router = useRouter();
+  
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
     if (storedToken) {
@@ -25,46 +26,36 @@ export default function DashNav() {
     }
   }, []);
 
-  const handleSignOut = () => {
-    localStorage.removeItem("token");
-    router.push("/login");
-  };
-  const handleCreatePortfolio = async (portfolioName: string) => {
+  const handleCreateWatchlist = async (watchlistName: string) => {
     if (!token) {
       alert("You need to login first");
       router.push("/login");
     }
-    
+
     try {
-      const response = await fetch("http://localhost:8000/create-portfolio/", {
+      const response = await fetch("http://localhost:8000/create-watchlist/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Token ${token}`,
         },
         body: JSON.stringify({
-          portfolio_name: portfolioName,
+          name: watchlistName,
+          description: `watchlist created for${token.substring(0,30)}`,
         }),
       });
 
       if (response.ok) {
-        localStorage.setItem("portfolio", "created");
-        console.log("Portfolio created successfully");
-        alert("Portfolio created successfully");
+        localStorage.setItem("watchlist", "created");
+        console.log("Watchlist created successfully");
+        alert("Watchlist created successfully");
       } else {
-        console.error("Failed to create portfolio");
+        console.error("Failed to create watchlist");
       }
     } catch (error) {
-      console.error("Error creating portfolio:", error);
+      console.error("Error creating watchlist:", error);
     }
   };
-
-  useEffect(() => {
-    const portfolio = localStorage.getItem("portfolio");
-    if(portfolio== "created"){
-      setIsPortfolio(true);
-    }
-  }, []);
 
   return (
     <>
@@ -84,26 +75,16 @@ export default function DashNav() {
             <li>About Us</li>
           </ul>
           <div className="hidden md:flex items-center gap-6 font-barlow font-bold">
-            {!isPortfolio ? (
-                            <button
-                            className="border-2 border-black px-6 py-3 font-bold"
-                            onClick={() => setShowModal(true)}
-                          >
-                            Create Portfolio
-                          </button>
-            ) : (
-              <button
+            <button
               className="border-2 border-black px-6 py-3 font-bold"
-              onClick={handleSignOut}
+              onClick={() => setShowModal(true)}
             >
-              Sign Out
+              Create Watchlist
             </button>
-            )}
-
-            <Modal
+            <ModalWatchlist
               show={showModal}
               onClose={() => setShowModal(false)}
-              onSubmit={handleCreatePortfolio}
+              onSubmit={handleCreateWatchlist}
             />
             <div className="rounded-full">
               <img

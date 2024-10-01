@@ -44,7 +44,7 @@ export default function CompanyChart({ symbol }: { symbol: string }) {
         const formattedData: ChartData[] = data.oneYearData.quotes.map(
           (quote: any) => ({
             date: new Date(quote.date).toLocaleDateString(),
-            close: quote.close, // Assuming 'close' is the value you want to plot
+            close: quote.close,
           })
         );
 
@@ -83,7 +83,7 @@ export default function CompanyChart({ symbol }: { symbol: string }) {
   const isGrowing =
     filteredData.length > 0 &&
     filteredData[filteredData.length - 1].close > filteredData[0].close;
-  const lineColor = isGrowing ? "green" : "red"; // Set color based on growth/dip
+  const lineColor = isGrowing ? "green" : "red"; 
 
   return (
     <Card>
@@ -96,7 +96,7 @@ export default function CompanyChart({ symbol }: { symbol: string }) {
               left: 12,
               right: 12,
             }}
-            className="top-28" // Keep the top-28 class to center the chart
+            className=" top-20" 
             onMouseLeave={() => setTooltipVisible(false)} // Hide tooltip on mouse leave
           >
             <CartesianGrid vertical={false} />
@@ -124,8 +124,8 @@ export default function CompanyChart({ symbol }: { symbol: string }) {
           </LineChart>
         </ChartContainer>
       </CardContent>
-      <CardFooter className="space-x-4 z-20 relative"> {/* Ensure relative positioning */}
-        {/* Buttons for selecting time ranges */}
+      <CardFooter className="space-x-4 relative">
+        {" "}
         <button
           onClick={() => setTimeRange("1month")}
           className={`px-4 py-2 border rounded ${
