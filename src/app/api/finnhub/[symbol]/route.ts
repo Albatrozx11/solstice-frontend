@@ -10,12 +10,9 @@ export async function GET(
   dotenv.config();
   try {
     const today = new Date();
-    // Calculate the date one week ago
-    const oneWeekAgo = new Date();
-    oneWeekAgo.setDate(today.getDate() - 7);
 
     // Format dates to 'YYYY-MM-DD'
-    const formatDate = (date:any) => {
+    const formatDate = (date: any) => {
       return date.toISOString().split("T")[0]; // Extract the date part
     };
     // Initialize the finnhub API client
@@ -32,18 +29,23 @@ export async function GET(
     });
 
     const quote = await yahooFinance.quote(symbol);
-    
+
     const news = await new Promise((resolve, reject) => {
-      finnhubClient.companyNews(symbol, formatDate(oneWeekAgo), formatDate(today), (error: any, data: any) => {
-        if (error) reject(error);
-        resolve(data);
-      });
-    })
+      finnhubClient.companyNews(
+        symbol,
+        formatDate(today),
+        formatDate(today),
+        (error: any, data: any) => {
+          if (error) reject(error);
+          resolve(data);
+        }
+      );
+    });
 
     return NextResponse.json({
       companyProfile,
       quote,
-      news
+      news,
     });
   } catch (error) {
     console.error("Error fetching company data:", error);
