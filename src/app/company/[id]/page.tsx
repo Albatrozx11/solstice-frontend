@@ -21,6 +21,7 @@ export default function page({ params }: CompanyProps) {
   const [recommendationData, setRecommendationData] = useState<any>(null);
   const [analystEstimates, setAnalystEstimates] = useState<any>(null);
   const [isWatchlist, setIsWatchlist] = useState(false);
+  const [news, setNews] = useState<any>(null);
   const [formData, setFormData] = useState<any>({
     qty: 0,
   });
@@ -106,6 +107,7 @@ export default function page({ params }: CompanyProps) {
         const data = await res.json();
         setCompanyProfile(data.companyProfile);
         setQuote(data.quote);
+        setNews(data.news);
         console.log(data);
         const recommendationRes = await fetch(`/api/recommendation/${id}`);
         if (!recommendationRes.ok) {
@@ -171,7 +173,8 @@ export default function page({ params }: CompanyProps) {
   }, [recommendationData]);
 
   const formattedMarketCap =
-    quote && quote.marketCap ? quote.marketCap.toLocaleString("en-US", {
+    quote && quote.marketCap
+      ? quote.marketCap.toLocaleString("en-US", {
           style: "currency",
           currency: "USD",
           minimumFractionDigits: 0,
@@ -182,36 +185,73 @@ export default function page({ params }: CompanyProps) {
     <div className="flex flex-col mx-10 h-max">
       <CompanyNav />
       <div className="flex h-max m-10">
-        <div className="basis-[60%] flex justify-between">
-          <div className="flex flex-col w-full">
-            <div className="flex w-full">
-              <div className="flex flex-col w-full ml-5">
-                {companyProfile && (
-                  <>
-                    <img src={companyProfile.logo} width={100} height={100} />
-                    <h1 className="font-barlow text-2xl mt-2">
-                      {companyProfile.name}
-                    </h1>
-                  </>
-                )}
-                {quote && (
-                  <h1 className="font-barlow text-2xl mt-4">
-                    ${quote.regularMarketPrice}
+        {/* Left Section - Graph and Company Info */}
+        <div className="basis-[60%] flex flex-col ">
+          <div className="flex w-full">
+            <div className="flex flex-col w-full ml-5">
+              {companyProfile && (
+                <>
+                  <img src={companyProfile.logo} width={100} height={100} />
+                  <h1 className="font-barlow text-2xl mt-2">
+                    {companyProfile.name}
                   </h1>
-                )}
-              </div>
-              <button
-                className="rounded-md border-gray border-2 h-10 font-barlow px-2 mt-2 "
-                onClick={handleWatchList}
-              >
-                Watchlist
-              </button>
+                </>
+              )}
+              {quote && (
+                <h1 className="font-barlow text-2xl mt-4">
+                  ${quote.regularMarketPrice}
+                </h1>
+              )}
             </div>
-            <div className="mt-4 ml-4 ">
-              <CompanyChart symbol={params.id} />
+            <button
+              className="rounded-md border-gray border-2 h-10 font-barlow px-2 mt-2"
+              onClick={handleWatchList}
+            >
+              Watchlist
+            </button>
+          </div>
+
+          {/* Chart Section */}
+          <div className="mt-4 ml-4">
+            <CompanyChart symbol={params.id} />
+          </div>
+
+          {/* News Section */}
+          {news &&
+          <div className="mt-4 ml-4">
+            <h1 className="text-2xl font-barlow text-gray-600">News</h1>
+            <div className="flex flex-col gap-4 mt-4">
+              
+                {news.map((item: any) => (
+                  <div
+                    key={item.datetime}
+                    className="flex flex-col gap-2 border-2 border-gray-300 rounded-md p-4"
+                  >
+                    <h1 className="font-barlow text-xl">{item.headline}</h1>
+                    <p className="font-barlow text-gray-600">{item.summary}</p>
+                    <a
+                      href={item.url}
+                      target="_blank"
+                      className="font-barlow text-blue-500"
+                    >
+                      Read More
+                    </a>
+                  </div>
+                ))}
             </div>
+          </div>}
+        </div>
+
+        {/* Right Section - Analyst Estimates, Fundamentals, and BUY/SELL buttons */}
+        <div className="basis-[40%] ml-10 mt-2 border-2 border-gray-300 rounded-md h-full flex flex-col">
+          <div className="m-4">
+            {companyProfile && (
+              <h1 className="text-xl font-barlow mb-4">
+                {companyProfile.name}
+              </h1>
+            )}
             {analystEstimates && (
-              <div className="mt-20 ml-4 flex flex-col">
+              <div className="flex flex-col mb-10">
                 <h1 className="text-2xl text-gray-600 mb-5">
                   Analyst Estimates
                 </h1>
@@ -222,13 +262,13 @@ export default function page({ params }: CompanyProps) {
                       analystEstimates.sellPercentage
                         ? `bg-green-500`
                         : `bg-red-600`
-                    }  `}
+                    }`}
                   >
                     <h1 className="font-helvetica text-white text-xl text-center">
                       {analystEstimates.buyPercentage >
                       analystEstimates.sellPercentage
-                        ? analystEstimates.buyPercentage + `%`
-                        : analystEstimates.sellPercentage + `%`}
+                        ? `${analystEstimates.buyPercentage}%`
+                        : `${analystEstimates.sellPercentage}%`}
                     </h1>
                   </div>
                   <div className="flex flex-col ml-20">
@@ -247,7 +287,7 @@ export default function page({ params }: CompanyProps) {
             )}
 
             {quote && (
-              <div className="mt-20 ml-4">
+              <div>
                 <h1 className="text-2xl text-gray-600 mb-5">Fundamentals</h1>
                 <div className="flex justify-between">
                   {/* Left Column */}
@@ -329,114 +369,111 @@ export default function page({ params }: CompanyProps) {
               </div>
             )}
           </div>
-        </div>
-        <div className="basis-[40%] ml-10 mt-2 border-2 border-gray-300 rounded-md h-full flex flex-col">
-          <h1 className="text-xl font-barlow m-4">
-            {companyProfile && companyProfile.name}
-          </h1>
-          <hr className="border-t-2 border-gray-400 w-full mt-auto" />
-          <div className="flex">
-            <button
-              className={`mr-10 my-2 ml-4 text-xl ${
-                selected == "BUY" ? `text-green-500` : `text-gray-600`
-              }`}
-              onClick={handleSelectBuy}
-            >
-              BUY
-            </button>
-            <button
-              className={`mr-10 my-2 ml-4 text-xl ${
-                selected == "SELL" ? `text-green-500` : `text-gray-600`
-              }`}
-              onClick={handleSelectSell}
-            >
-              SELL
-            </button>
-          </div>
-          <hr className="border-t-2 border-gray-400 w-full mt-auto" />
-          {selected == "BUY" ? (
-            <>
-              <div className="m-4 h-[300px]">
-                <form onSubmit={handleSubmit}>
-                  <div className="flex justify-between">
-                    <label htmlFor="" className="font-barlow">
-                      qty
-                    </label>
-                    <input
-                      type="text"
-                      className="border-gray-300 rounded-md border-2 p-2"
-                      onChange={handleChange}
-                      name="qty"
-                      value={formData.qty}
-                    />
-                  </div>
-                  <div className="flex justify-between mt-4">
-                    <label htmlFor="" className="font-barlow">
-                      Price
-                    </label>
-                    <input
-                      type="none"
-                      placeholder="At Market"
-                      className="border-gray-300 rounded-md border-2 p-2"
-                    />
-                  </div>
-                </form>
-              </div>
-              <div className="flex m-4 justify-between">
-                <h1 className="text-gray-600 font-barlow">Balance: $0</h1>
-                <h1 className="text-gray-600  font-barlow">
-                  Approx req: $
-                  {(formData.qty * quote.regularMarketPrice).toFixed(2)}
-                </h1>
-              </div>
-              <hr className="border-t-2 border-gray-400 w-full mt-auto" />
-              <button className="w-full bg-green-600 text-white font-barlow text-2xl rounded-md py-3">
+
+          {/* Buy/Sell Section */}
+          <div className="mt-auto">
+            <hr className="border-t-2 border-gray-400 w-full mt-auto" />
+            <div className="flex justify-center my-4">
+              <button
+                className={`mr-10 my-2 text-xl ${
+                  selected === "BUY" ? `text-green-500` : `text-gray-600`
+                }`}
+                onClick={handleSelectBuy}
+              >
                 BUY
               </button>
-            </>
-          ) : (
-            <div></div>
-          )}
-          {selected == "SELL" ? (
-            <>
-              <div className="m-4 h-[300px]">
-                <form onSubmit={handleSubmit}>
-                  <div className="flex justify-between">
-                    <label htmlFor="" className="font-barlow">
-                      qty
-                    </label>
-                    <input
-                      type="text"
-                      className="border-gray-300 rounded-md border-2 p-2"
-                      onChange={handleChange}
-                      name="qty"
-                      value={formData.qty}
-                    />
-                  </div>
-                  <div className="flex justify-between mt-4">
-                    <label htmlFor="" className="font-barlow">
-                      Price
-                    </label>
-                    <input
-                      type="none"
-                      placeholder="At Market"
-                      className="border-gray-300 rounded-md border-2 p-2"
-                    />
-                  </div>
-                </form>
-              </div>
-              <div className="flex m-4 justify-between">
-                <h1 className="text-gray-600 font-barlow">Balance: $0</h1>
-                <h1 className="text-gray-600  font-barlow">Approx req: $0</h1>
-              </div>
-              <hr className="border-t-2 border-gray-400 w-full mt-auto" />
-              <button className="w-full bg-red-600 text-white font-barlow text-2xl rounded-md py-3">
+              <button
+                className={`mr-10 my-2 text-xl ${
+                  selected === "SELL" ? `text-green-500` : `text-gray-600`
+                }`}
+                onClick={handleSelectSell}
+              >
                 SELL
               </button>
-            </>
-          ) : (
-            <div></div>
-          )}
+            </div>
+            <hr className="border-t-2 border-gray-400 w-full mt-auto" />
+
+            {/* Conditional Forms for BUY and SELL */}
+            {selected === "BUY" ? (
+              <>
+                <div className="m-4 h-[300px]">
+                  <form onSubmit={handleSubmit}>
+                    <div className="flex justify-between">
+                      <label htmlFor="" className="font-barlow">
+                        qty
+                      </label>
+                      <input
+                        type="text"
+                        className="border-gray-300 rounded-md border-2 p-2"
+                        onChange={handleChange}
+                        name="qty"
+                        value={formData.qty}
+                      />
+                    </div>
+                    <div className="flex justify-between mt-4">
+                      <label htmlFor="" className="font-barlow">
+                        Price
+                      </label>
+                      <input
+                        type="none"
+                        placeholder="At Market"
+                        className="border-gray-300 rounded-md border-2 p-2"
+                      />
+                    </div>
+                  </form>
+                </div>
+                <div className="flex m-4 justify-between">
+                  <h1 className="text-gray-600 font-barlow">Balance: $0</h1>
+                  <h1 className="text-gray-600 font-barlow">
+                    Approx req: $
+                    {(formData.qty * quote.regularMarketPrice).toFixed(2)}
+                  </h1>
+                </div>
+                <button className="w-full bg-green-600 text-white font-barlow text-2xl rounded-md py-3">
+                  BUY
+                </button>
+              </>
+            ) : selected === "SELL" ? (
+              <>
+                <div className="m-4 h-[300px]">
+                  <form onSubmit={handleSubmit}>
+                    <div className="flex justify-between">
+                      <label htmlFor="" className="font-barlow">
+                        qty
+                      </label>
+                      <input
+                        type="text"
+                        className="border-gray-300 rounded-md border-2 p-2"
+                        onChange={handleChange}
+                        name="qty"
+                        value={formData.qty}
+                      />
+                    </div>
+                    <div className="flex justify-between mt-4">
+                      <label htmlFor="" className="font-barlow">
+                        Price
+                      </label>
+                      <input
+                        type="none"
+                        placeholder="At Market"
+                        className="border-gray-300 rounded-md border-2 p-2"
+                      />
+                    </div>
+                  </form>
+                </div>
+                <div className="flex m-4 justify-between">
+                  <h1 className="text-gray-600 font-barlow">Balance: $0</h1>
+                  <h1 className="text-gray-600 font-barlow">
+                    Approx req: $
+                    {(formData.qty * quote.regularMarketPrice).toFixed(2)}
+                  </h1>
+                </div>
+                <button className="w-full bg-red-600 text-white font-barlow text-2xl rounded-md py-3">
+                  SELL
+                </button>
+              </>
+            ) : null}
+          </div>
         </div>
       </div>
     </div>
