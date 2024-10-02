@@ -83,7 +83,7 @@ export default function page({ params }: CompanyProps) {
           Authorization: `Token ${token}`,
         },
         body: JSON.stringify({
-          comp_name: companyProfile.name,
+          ticker: companyProfile.ticker,
         }),
       });
 
@@ -96,7 +96,41 @@ export default function page({ params }: CompanyProps) {
       console.error("Error creating watchlist:", error);
     }
   }
-  const handleSubmit = () => {};
+
+  //submit buy or sell request for stock
+  const handleSubmit = async (event:any) => {
+    event.preventDefault();
+    const {qty} = formData;
+
+    if (!token) {
+      alert("You need to login first");
+      router.push("/login");
+    }
+
+
+    try {
+      const response = await fetch("http://localhost:8000/investment/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Token ${token}`,
+        },
+        body: JSON.stringify({
+          quantity: qty,
+          ticker: companyProfile.ticker,
+        }),
+      })
+
+      if(response.ok){
+        alert(`Added ${qty} of ${companyProfile.name} stocks to your portfolio`)
+      }else{
+        alert("Failed to add stocks");
+      }
+    } catch (error) {
+      console.log("Error adding stocks", error)
+    }
+
+  };
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -396,81 +430,85 @@ export default function page({ params }: CompanyProps) {
             {/* Conditional Forms for BUY and SELL */}
             {selected === "BUY" ? (
               <>
-                <div className="m-4 h-[300px]">
-                  <form onSubmit={handleSubmit}>
-                    <div className="flex justify-between">
-                      <label htmlFor="" className="font-barlow">
-                        qty
-                      </label>
-                      <input
-                        type="text"
-                        className="border-gray-300 rounded-md border-2 p-2"
-                        onChange={handleChange}
-                        name="qty"
-                        value={formData.qty}
-                      />
-                    </div>
-                    <div className="flex justify-between mt-4">
-                      <label htmlFor="" className="font-barlow">
-                        Price
-                      </label>
-                      <input
-                        type="none"
-                        placeholder="At Market"
-                        className="border-gray-300 rounded-md border-2 p-2"
-                      />
-                    </div>
-                  </form>
-                </div>
-                <div className="flex m-4 justify-between">
-                  <h1 className="text-gray-600 font-barlow">Balance: $0</h1>
-                  <h1 className="text-gray-600 font-barlow">
-                    Approx req: $
-                    {(formData.qty * quote.regularMarketPrice).toFixed(2)}
-                  </h1>
-                </div>
-                <button className="w-full bg-green-600 text-white font-barlow text-2xl rounded-md py-3">
-                  BUY
-                </button>
+         <div className="m-4 h-[300px]">
+  <form onSubmit={handleSubmit} className="flex flex-col h-full">
+    <div>
+      <div className="flex justify-between">
+        <label htmlFor="" className="font-barlow">qty</label>
+        <input
+          type="text"
+          className="border-gray-300 rounded-md border-2 p-2"
+          onChange={handleChange}
+          name="qty"
+          value={formData.qty}
+        />
+      </div>
+      <div className="flex justify-between mt-4">
+        <label htmlFor="" className="font-barlow">Price</label>
+        <input
+          type="none"
+          placeholder="At Market"
+          className="border-gray-300 rounded-md border-2 p-2"
+        />
+      </div>
+    </div>
+
+    {/* Balance and Buy Button at the bottom */}
+    <div className="mt-auto">
+      <div className="flex m-4 justify-between">
+        <h1 className="text-gray-600 font-barlow">Balance: $0</h1>
+        <h1 className="text-gray-600 font-barlow">
+          Approx req: ${ (formData.qty * quote.regularMarketPrice).toFixed(2) }
+        </h1>
+      </div>
+      <button className="w-full bg-green-600 text-white font-barlow text-2xl rounded-md py-3" type="submit">
+        BUY
+      </button>
+    </div>
+  </form>
+</div>
+
               </>
             ) : selected === "SELL" ? (
               <>
-                <div className="m-4 h-[300px]">
-                  <form onSubmit={handleSubmit}>
-                    <div className="flex justify-between">
-                      <label htmlFor="" className="font-barlow">
-                        qty
-                      </label>
-                      <input
-                        type="text"
-                        className="border-gray-300 rounded-md border-2 p-2"
-                        onChange={handleChange}
-                        name="qty"
-                        value={formData.qty}
-                      />
-                    </div>
-                    <div className="flex justify-between mt-4">
-                      <label htmlFor="" className="font-barlow">
-                        Price
-                      </label>
-                      <input
-                        type="none"
-                        placeholder="At Market"
-                        className="border-gray-300 rounded-md border-2 p-2"
-                      />
-                    </div>
-                  </form>
-                </div>
-                <div className="flex m-4 justify-between">
-                  <h1 className="text-gray-600 font-barlow">Balance: $0</h1>
-                  <h1 className="text-gray-600 font-barlow">
-                    Approx req: $
-                    {(formData.qty * quote.regularMarketPrice).toFixed(2)}
-                  </h1>
-                </div>
-                <button className="w-full bg-red-600 text-white font-barlow text-2xl rounded-md py-3">
-                  SELL
-                </button>
+           <div className="m-4 h-[300px]">
+  <form onSubmit={handleSubmit} className="flex flex-col h-full">
+    <div>
+      <div className="flex justify-between">
+        <label htmlFor="" className="font-barlow">qty</label>
+        <input
+          type="text"
+          className="border-gray-300 rounded-md border-2 p-2"
+          onChange={handleChange}
+          name="qty"
+          value={formData.qty}
+        />
+      </div>
+      <div className="flex justify-between mt-4">
+        <label htmlFor="" className="font-barlow">Price</label>
+        <input
+          type="none"
+          placeholder="At Market"
+          className="border-gray-300 rounded-md border-2 p-2"
+        />
+      </div>
+    </div>
+
+    {/* Balance and Sell Button at the bottom */}
+    <div className="mt-auto">
+      <div className="flex m-4 justify-between">
+        <h1 className="text-gray-600 font-barlow">Balance: $0</h1>
+        <h1 className="text-gray-600 font-barlow">
+          Approx req: ${(formData.qty * quote.regularMarketPrice).toFixed(2)}
+        </h1>
+      </div>
+      <button className="w-full bg-red-600 text-white font-barlow text-2xl rounded-md py-3" type="submit">
+        SELL
+      </button>
+    </div>
+  </form>
+</div>
+
               </>
             ) : null}
           </div>

@@ -46,7 +46,7 @@ export default function WatchlistNav() {
       });
 
       if (response.ok) {
-        localStorage.setItem("watchlist", "created");
+        localStorage.setItem("watchlist", watchlistName);
         console.log("Watchlist created successfully");
         alert("Watchlist created successfully");
       } else {

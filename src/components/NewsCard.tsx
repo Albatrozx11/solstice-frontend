@@ -9,4 +9,4 @@ export default function NewsCard() {
       </h1>
     </div>
   );
-}
+} 

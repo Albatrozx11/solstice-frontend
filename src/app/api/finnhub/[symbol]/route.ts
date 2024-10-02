@@ -11,6 +11,9 @@ export async function GET(
   try {
     const today = new Date();
 
+    const yesterday = new Date();
+    yesterday.setDate(today.getDate() - 1);
+
     // Format dates to 'YYYY-MM-DD'
     const formatDate = (date: any) => {
       return date.toISOString().split("T")[0]; // Extract the date part
@@ -33,7 +36,7 @@ export async function GET(
     const news = await new Promise((resolve, reject) => {
       finnhubClient.companyNews(
         symbol,
-        formatDate(today),
+        formatDate(yesterday),
         formatDate(today),
         (error: any, data: any) => {
           if (error) reject(error);
