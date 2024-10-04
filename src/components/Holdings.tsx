@@ -1,17 +1,27 @@
-import React from "react";
 import Link from "next/link";
-export default function Holdings() {
+
+interface HoldingProps {
+  ticker: string;
+  quantity: number;
+  price: number;
+  currentValue: number;
+}
+
+export default function Holding({ ticker, quantity, price, currentValue }: HoldingProps) {
   return (
     <>
       <div className="flex justify-between px-2 my-4 mx-4 items-center">
         <div className="flex flex-col">
-          <Link href="/company/AAPL"><h1 className="text-black opacity-80">AAPL</h1></Link>
-          
-          <h1 className="text-[#615D5D]">100 shares</h1>
+          <Link href={`/company/${ticker}`}>
+            <h1 className="text-black opacity-80">{ticker}</h1>
+          </Link>
+          <h1 className="text-[#615D5D]">{quantity} shares</h1>
         </div>
-        <h1 className="text-[#615D5D]">$226.05</h1>
-        <h1 className="text-[#009D10]">+$100</h1>
-        <h1 className="text-[#009D10]">$1000</h1>
+        <h1 className="text-[#615D5D]">${(price/quantity).toFixed(2)}</h1>
+        <h1 className={`${currentValue >= price ? "text-green-500" : "text-red-600"}`}>
+          {currentValue >= price ? "+" : "-"}${Math.abs(currentValue - price).toFixed(2)}
+        </h1>
+        <h1 className="text-[#009D10]">${currentValue.toFixed(2)}</h1>
       </div>
       <hr className="border-t-2 border-gray-400 w-full mt-auto" />
     </>
