@@ -12,11 +12,11 @@ interface HoldingData {
   };
   transction_type: string;
   quantity: number;
-  price: string;
+  purchase_price: string;
   date: string;
 }
 
-export default function HoldingsContainer({setHoldingsData}:any) {
+export default function HoldingsContainer({ setHoldingsData }: any) {
   const [isPortfolio, setIsPortfolio] = useState(false);
   const [token, setToken] = useState("");
   const [holdings, setHoldings] = useState<HoldingData[]>([]);
@@ -38,7 +38,7 @@ export default function HoldingsContainer({setHoldingsData}:any) {
   useEffect(() => {
     const fetchHoldings = async () => {
       try {
-        const response = await fetch("http://localhost:8000/transactions/", {
+        const response = await fetch("http://localhost:8000/investment/", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -62,9 +62,6 @@ export default function HoldingsContainer({setHoldingsData}:any) {
     }
   }, [token]);
 
-  const filteredHoldings = holdings.filter(
-    (holding) => holding.transction_type === "BUY"
-  );
   return (
     <div
       className={`rounded-md shadow-black shadow-md border-black basis-[34%] ml-7 ${
@@ -89,16 +86,16 @@ export default function HoldingsContainer({setHoldingsData}:any) {
           </div>
           <hr className="border-t-2 border-gray-400 w-full mt-auto" />
           <div className="max-h-[400px] overflow-y-auto">
-          {/* Map through holdings and render each holding */}
-          {filteredHoldings.map((holding, index) => (
-            <Holdings
-              key={index}
-              ticker={holding.company.ticker}
-              quantity={holding.quantity}
-              price={parseFloat(holding.price)} // Convert string price to number
-              currentValue={parseFloat(holding.price) * holding.quantity} // Placeholder for the current value, can be calculated based on live data
-            />
-          ))}
+            {/* Map through holdings and render each holding */}
+            {holdings.map((holding, index) => (
+              <Holdings
+                key={index}
+                ticker={holding.company.ticker}
+                quantity={holding.quantity}
+                price={parseFloat(holding.purchase_price)} // Convert string price to number
+                currentValue={parseFloat(holding.purchase_price) * holding.quantity} // Placeholder for the current value, can be calculated based on live data
+              />
+            ))}
           </div>
         </>
       ) : (

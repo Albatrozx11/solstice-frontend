@@ -108,7 +108,7 @@ export default function page({ params }: CompanyProps) {
     }
 
     try {
-      const response = await fetch("http://localhost:8000/transactions/", {
+      const response = await fetch("http://localhost:8000/investment-update/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -117,7 +117,6 @@ export default function page({ params }: CompanyProps) {
         body: JSON.stringify({
           quantity: qty,
           ticker: companyProfile.ticker,
-          transaction_type: selected == "BUY" ? "BUY" : "SELL",
         }),
       });
 
