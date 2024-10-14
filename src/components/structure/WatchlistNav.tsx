@@ -71,8 +71,9 @@ export default function WatchlistNav() {
             <Link href="/companyList">
               <li>Stocks</li>
             </Link>
-
-            <li>About Us</li>
+            <Link href="/transactions">
+            <li>Transactions</li>
+            </Link>
           </ul>
           <div className="hidden md:flex items-center gap-6 font-barlow font-bold">
             <button

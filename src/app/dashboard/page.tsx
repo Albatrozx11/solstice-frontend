@@ -22,7 +22,7 @@ interface Holding {
   };
   transction_type: string;
   quantity: number;
-  price: string;
+  purchase_price: string;
   date: string;
 }
 export default function page() {
@@ -33,7 +33,7 @@ export default function page() {
   let currentValue = 0;
   
   holdingsData.forEach((holding) => {
-    const purchasePrice = parseFloat(holding.price);
+    const purchasePrice = parseFloat(holding.purchase_price);
     const quantity = holding.quantity;
     const marketPrice = purchasePrice / quantity;
 

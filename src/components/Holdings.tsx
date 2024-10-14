@@ -18,7 +18,7 @@ export default function Holding({ ticker, quantity, price, currentValue }: Holdi
           <h1 className="text-[#615D5D]">{quantity} shares</h1>
         </div>
         <h1 className="text-[#615D5D]">${(price/quantity).toFixed(2)}</h1>
-        <h1 className={`${currentValue >= price ? "text-green-500" : "text-red-600"}`}>
+        <h1 className={`${currentValue >= price ? "text-[#009D10]" : "text-red-600"}`}>
           {currentValue >= price ? "+" : "-"}${Math.abs(currentValue - price).toFixed(2)}
         </h1>
         <h1 className="text-[#009D10]">${currentValue.toFixed(2)}</h1>
