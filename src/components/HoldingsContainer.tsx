@@ -78,7 +78,7 @@ export default function HoldingsContainer({ setHoldingsData }: any) {
               MKT PRICE
             </h1>
             <h1 className="font-barlow text-xl text-black opacity-80 px-2 my-6 mx-4">
-              RETURNS
+              TOTAL INVESTED
             </h1>
             <h1 className="font-barlow text-xl text-black opacity-80 px-2 my-6 mx-4">
               CURRENT

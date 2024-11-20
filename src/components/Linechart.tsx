@@ -25,7 +25,7 @@ interface ChartData {
 
 const chartConfig = {
   views: {
-    label: "Page Views",
+    label: "total value :",
   },
   desktop: {
     label: "Desktop",
